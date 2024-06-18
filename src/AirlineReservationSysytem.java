@@ -10,34 +10,34 @@ public class AirlineReservationSysytem implements Runnable{
     private Semaphore readerSemaphore;
     
     public int userID;
-    public int requestSead; // istenen kultuk numarsı.
+    public int requestSeat; // istenen kultuk numarsı.
     public String seatStatus;
     public int[] seats;
 
-    public AirlineReservationSysytem(Semaphore writerSemaphore , Semaphore readerSemaphore, int userID, int requestSead, int[] seats ){
+    public AirlineReservationSysytem(Semaphore writerSemaphore , Semaphore readerSemaphore, int userID, int requestSeat, int[] seats ){
         this.writerSemaphore = writerSemaphore;
         this.readerSemaphore = readerSemaphore;
         this.userID = userID;
-        this.requestSead = requestSead;
+        this.requestSeat = requestSeat;
         this.seats = seats;
     }
     
     // Writer
-    private void makeReservation(){   
+    private synchronized void makeReservation(){   
         try{
             writerSemaphore.acquire(); // Yazar semaforunu elde et.
             System.out.println("Time: "+ java.time.LocalTime.now());
-            System.out.println("Writer "+ userID + " tire to book the seat " + requestSead);
+            System.out.println("Writer "+ userID + " tries to book the seat " + requestSeat + " ...");
 
-            if(seats[requestSead] == 0){ // Kolduk durumu 0 ise (boş) satın al ve durumu 1'e çak.
-                seats[requestSead] = 1;  // o kultuğu durumu 1 olduğundan başka bir writer tarafından alınamaz durumdadır.
-                System.out.println("Writer "+ userID + " booked sead number " + requestSead + " successfully");
+            if(seats[requestSeat] == 0){ // Kolduk durumu 0 ise (boş) satın al ve durumu 1'e çak.
+                seats[requestSeat] = 1;  // o kultuğu durumu 1 olduğundan başka bir writer tarafından alınamaz durumdadır.
+                System.out.println("Writer "+ userID + " booked seat number " + requestSeat + " successfully.");
 
-            }else if(seats[requestSead] == 1){
+            }else if(seats[requestSeat] == 1){
                 seatStatus = "bookedUp";
-                System.out.println("Writer "+ userID + " could not booked seat number" + requestSead + " since it has been already booked"); 
+                System.out.println("Writer "+ userID + " could not booked seat number" + requestSeat + " since it has been already booked."); 
             }
-            System.out.println("-------------------------------------------");
+            System.out.println("*******************************************");
             ReaderThread(); // Her write işlemden sora Reader son durumu görmek için Reader() fonksiyonu burda yerleştridim.
 
         }catch(InterruptedException e){
@@ -49,7 +49,7 @@ public class AirlineReservationSysytem implements Runnable{
     }
 
     // Reader
-    private void ReaderThread() {
+    private synchronized void ReaderThread() {
         try{  
             readerSemaphore.acquire(); // Okuyucu semaforunu elde et
             System.out.println("Time: "+ java.time.LocalTime.now());
@@ -57,7 +57,7 @@ public class AirlineReservationSysytem implements Runnable{
             for(int i = 0; i < seats.length; i++){
                 System.out.println("seat No " + i + " : " + seats[i]);
             }
-            System.out.println("\n"+"-------------------------------------");
+            System.out.println("-------------------------------------------\n");
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -68,10 +68,10 @@ public class AirlineReservationSysytem implements Runnable{
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
       try {
           makeReservation(); // Koltuğu al ve ardından bilet durumunu göster
-          Thread.sleep(500);
+          //Thread.sleep(500);
       }catch (Exception e) {
           e.printStackTrace();
       }

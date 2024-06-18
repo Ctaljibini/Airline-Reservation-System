@@ -12,17 +12,22 @@ public class Main {
         Semaphore writerSemaphore = new Semaphore(MAX_CONCURRENT_WRITERS);
         Semaphore readerSemaphore = new Semaphore(MAX_CONCURRENT_READERS);
 
-        AirlineReservationSysytem request1 = new AirlineReservationSysytem(writerSemaphore, readerSemaphore, 0, 0, seats);
-        AirlineReservationSysytem request2 = new AirlineReservationSysytem(writerSemaphore, readerSemaphore, 1, 1, seats);
-        AirlineReservationSysytem request3 = new AirlineReservationSysytem(writerSemaphore, readerSemaphore, 1, 1, seats);
 
+        AirlineReservationSysytem request0 = new AirlineReservationSysytem(writerSemaphore, readerSemaphore, 0, 0, seats);
+        AirlineReservationSysytem request1 = new AirlineReservationSysytem(writerSemaphore, readerSemaphore, 1, 1, seats);
+        AirlineReservationSysytem request2 = new AirlineReservationSysytem(writerSemaphore, readerSemaphore, 2, 1, seats);
+
+        Thread thread0 = new Thread(request0);
         Thread thread1 = new Thread(request1);
         Thread thread2 = new Thread(request2);
-        Thread thread3 = new Thread(request3);
 
+        thread0.start();
         thread1.start();
-        thread2.start();
-        thread3.start();
+        thread2.start(); 
+
+        thread0.join();
+        thread1.join();
+        thread2.join(); 
 
 
     }
