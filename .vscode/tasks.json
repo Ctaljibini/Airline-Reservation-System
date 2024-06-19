@@ -1,0 +1,23 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+			{
+					"label": "Java: Build",
+					"type": "shell",
+					"command": "javac",
+					"args": [
+							"-d",
+							"${workspaceFolder}/bin",
+							"-sourcepath",
+							"${workspaceFolder}/src",
+							"${workspaceFolder}/src/*.java"
+					],
+					"group": {
+							"kind": "build",
+							"isDefault": true
+					},
+					"problemMatcher": ["$javac"],
+					"detail": "Generated task by ChatGPT"
+			}
+	]
+}

@@ -2,7 +2,7 @@
 import java.util.concurrent.Semaphore;
 
 /**
- * Methods
+ * AirlineReservationSysytem
  */
 public class AirlineReservationSysytem implements Runnable{
 
@@ -76,6 +76,7 @@ public class AirlineReservationSysytem implements Runnable{
           e.printStackTrace();
       }
     }
-
-
 }
+
+
+
